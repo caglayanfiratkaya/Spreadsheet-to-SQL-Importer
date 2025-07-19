@@ -2,151 +2,154 @@ import streamlit as st
 import pandas as pd
 import os
 
-# --- SAYFAYI YAPILANDIR ---
+# --- PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="SQL Insert Üretici",
-    page_icon="🗃️",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="SQL Insert Generator",  # Sets the browser tab title and icon
+    page_icon="🗃️",                    # Sets the page icon
+    layout="wide",                      # Uses wide layout for better display
+    initial_sidebar_state="expanded"    # Sidebar is expanded by default
 )
 
-# --- Çekirdek Fonksiyon ---
+# --- CORE FUNCTION ---
 def generate_inserts(df, table_name, blank_mode, insert_mode):
-    """DataFrame içeriğine göre INSERT sorguları üretir."""
-    columns = [f"[{col}]" for col in df.columns]
-    cols_str = ", ".join(columns)
+    """Generates INSERT statements based on DataFrame content."""
+    columns = [f"[{col}]" for col in df.columns]  # Formats column names for SQL
+    cols_str = ", ".join(columns)                 # Joins column names for SQL syntax
 
     def process_value(val):
+        # Handles empty/blank values according to user selection
         if pd.isna(val) or str(val).strip() == '':
             return "NULL" if blank_mode == 'NULL' else "''"
-        clean_val = str(val).replace("'", "''")
+        clean_val = str(val).replace("'", "''")   # Escapes single quotes for SQL
         return f"'{clean_val}'"
 
     if insert_mode == 'MULTI':
+        # Generates a single multi-row INSERT statement
         value_rows = [f"({', '.join(map(process_value, row))})" for _, row in df.iterrows()]
         all_values_str = ",\n".join(value_rows)
         return f"INSERT INTO [{table_name}] ({cols_str})\nVALUES\n{all_values_str};"
     else: # SINGLE
+        # Generates separate INSERT statements for each row
         inserts = [f"INSERT INTO [{table_name}] ({cols_str}) VALUES ({', '.join(map(process_value, row))});" for _, row in df.iterrows()]
         return "\n".join(inserts)
 
-# --- Session State Başlatma ---
+# --- SESSION STATE INIT ---
 if 'df' not in st.session_state:
-    st.session_state.df = None
+    st.session_state.df = None  # Stores the uploaded DataFrame
 if 'generated_sql' not in st.session_state:
-    st.session_state.generated_sql = None
+    st.session_state.generated_sql = None  # Stores the generated SQL code
 
-# --- Callback Fonksiyonu ---
+# --- CALLBACK FUNCTION ---
 def process_file_on_upload():
-    """SADECE dosya yüklendiğinde veya temizlendiğinde çalışır."""
-    st.session_state.generated_sql = None
+    """Runs only when file is uploaded or cleared."""
+    st.session_state.generated_sql = None  # Resets generated SQL when file changes
     if st.session_state.get('file_uploader_key'):
         try:
             uploaded_file = st.session_state.file_uploader_key
-            # Anında önizleme için varsayılan olarak ilk sayfayı oku
+            # Reads the uploaded file (Excel or CSV) into a DataFrame
             st.session_state.df = pd.read_excel(uploaded_file, sheet_name=0) if uploaded_file.name.endswith('.xlsx') else pd.read_csv(uploaded_file)
         except Exception as e:
-            st.error(f"Dosya okunamadı: {e}")
+            st.error(f"File could not be read: {e}")  # Shows error if file can't be read
             st.session_state.df = None
     else:
         st.session_state.df = None
 
-# --- ARAYÜZ ---
-st.title("🗃️ Gelişmiş SQL INSERT Üretici")
+# --- UI ---
+st.title("🗃️ SQL INSERT Generator")  # Main page title
 
-# Kenar Çubuğu (Sidebar)
+# Sidebar
 with st.sidebar:
-    col1, col2 = st.columns([0.8, 0.2])
+    col1, col2 = st.columns([0.8, 0.2])  # Sidebar layout: control panel and help
     with col1:
-        st.header("Kontrol Paneli")
+        st.header("Control Panel")        # Sidebar header
     with col2:
         with st.popover("❓", use_container_width=True):
             st.markdown("""
-                ### 🗃️ SQL Asistanı
-                Bu araç, Excel ve CSV dosyalarınızı SQL `INSERT` sorgularına dönüştürmenizi sağlar.
+                ### 🗃️ SQL INSERT Generator Assistant
+                This tool allows you to convert your Excel and CSV files into SQL `INSERT` statements.
 
-                **Nasıl Kullanılır?**
-                1.  **Dosya Yükleyin:** Desteklenen formatta (`.xlsx` veya `.csv`) bir dosya seçin. Seçim sonrası veri önizlemesi anında belirecektir.
-                2.  **Seçenekleri Ayarlayın:** Hedef veritabanı türünü, tablo adını ve diğer SQL ayarlarını yapılandırın.
-                3.  **Kodu Üretin:** Butona basarak SQL sorgularınızın anında oluşturulmasını sağlayın.
+                **How to Use?**
+                1.  **Upload a File:** Select a file in supported format (`.xlsx` or `.csv`). After selection, a data preview will appear instantly.
+                2.  **Configure Options:** Set the target database type, table name, and other SQL settings.
+                3.  **Generate Code:** Click the button to instantly generate your SQL statements.
 
-                **Özellikler:**
-                - **Anında Önizleme:** Yüklediğiniz verinin ilk 5 satırını görerek doğruluğunu kontrol edebilirsiniz.
-                - **SQL Lehçeleri:** Farklı veritabanları (MS SQL Server, PostgreSQL, MySQL) için uyumlu sorgular üretebilirsiniz.
-                - **Excel Sayfaları:** Çok sayfalı Excel dosyalarında istediğiniz sayfayı seçmek için bir menü belirir.
-                - **Ayarları Hafızada Tutma:** Yaptığınız seçimler (lehçe, insert tipi vb.) siz dosyayı değiştirene kadar saklanır.
-                """)
+                **Features:**
+                - **Instant Preview:** See the first 5 rows of your uploaded data to verify correctness.
+                - **SQL Dialects:** Generate compatible statements for different databases (MS SQL Server, PostgreSQL, MySQL).
+                - **Excel Sheets:** For multi-sheet Excel files, a menu appears to select the desired sheet.
+                - **Stateful Settings:** Your selections (dialect, insert type, etc.) are remembered until you change the file.
+                """)  # Help popover with usage instructions
 
     uploaded_file = st.file_uploader(
-        "**1. Dosyanızı Yükleyin**",
-        type=['xlsx', 'csv'],
-        key='file_uploader_key',
-        on_change=process_file_on_upload
+        "**1. Upload Your File**",
+        type=['xlsx', 'csv'],              # Accepts Excel and CSV files
+        key='file_uploader_key',           # Key for session state
+        on_change=process_file_on_upload   # Callback when file is uploaded
     )
 
-    is_file_uploaded = st.session_state.df is not None
+    is_file_uploaded = st.session_state.df is not None  # Checks if file is uploaded
     
-    # Tüm ayarların olduğu form. Bu yapı, durumun korunmasına yardımcı olur.
+    # All settings form. This helps preserve state.
     with st.form("settings_form", border=False):
-        st.subheader("2. SQL Seçenekleri")
+        st.subheader("2. SQL Options")     # Section for SQL options
 
-        # Excel sayfası seçimi
+        # Excel sheet selection
         sheet_name_to_process = None
         if is_file_uploaded and uploaded_file.name.endswith('.xlsx'):
             xls = pd.ExcelFile(uploaded_file)
             if len(xls.sheet_names) > 1:
-                sheet_name_to_process = st.selectbox("Excel Sayfasını Seçin:", xls.sheet_names)
+                sheet_name_to_process = st.selectbox("Select Excel Sheet:", xls.sheet_names)  # Allows sheet selection
 
-        # Diğer seçenekler
-        dialect = st.selectbox("Hedef SQL Lehçesi:", ['MS SQL Server', 'PostgreSQL', 'MySQL'], disabled=not is_file_uploaded)
-        default_name = os.path.splitext(uploaded_file.name)[0] if uploaded_file else ""
-        user_table_name = st.text_input("Tablo Adı:", placeholder=f"Varsayılan: {default_name}", disabled=not is_file_uploaded)
-        blank_mode = st.radio("Boş hücreler:", ('NULL olarak ata', "Boş metin ('') olarak ata"), horizontal=True, disabled=not is_file_uploaded)
-        insert_mode = st.radio("INSERT Tipi:", ('Her satır için ayrı', 'Tek sorguda birleştir (Multi-row)'), disabled=not is_file_uploaded)
+        # Other options
+        dialect = st.selectbox("Target SQL Dialect:", ['MS SQL Server', 'PostgreSQL', 'MySQL'], disabled=not is_file_uploaded)  # SQL dialect selection
+        default_name = os.path.splitext(uploaded_file.name)[0] if uploaded_file else ""  # Default table name from file name
+        user_table_name = st.text_input("Table Name:", placeholder=f"Default: {default_name}", disabled=not is_file_uploaded)  # Table name input
+        blank_mode = st.radio("Empty cells:", ('Assign as NULL', "Assign as empty string ('')"), horizontal=True, disabled=not is_file_uploaded)  # Handling empty cells
+        insert_mode = st.radio("INSERT Type:", ('Separate for each row', 'Combine in one query (Multi-row)'), disabled=not is_file_uploaded)  # Insert statement type
         
-        # Formun gönderim butonu
+        # Form submit button
         generate_button = st.form_submit_button(
-            label="SQL Kodunu Üret", 
+            label="Generate SQL Code", 
             type="primary", 
             use_container_width=True, 
             disabled=not is_file_uploaded
-        )
+        )  # Button to generate SQL code
 
-# Ana Ekran
-st.subheader("Veri Önizleme")
+# Main Screen
+st.subheader("Data Preview")  # Section for data preview
 if st.session_state.df is not None:
-    st.info("Yüklediğiniz dosyanın içeriğini kontrol edebilmeniz için ilk 5 satırı aşağıda gösterilmektedir.")
-    st.dataframe(st.session_state.df.head(), use_container_width=True)
+    st.info("The first 5 rows of your uploaded file are shown below for you to verify the content.")  # Info message
+    st.dataframe(st.session_state.df.head(), use_container_width=True)  # Shows first 5 rows of uploaded data
 else:
-    st.info("Yükleyeceğiniz dosyanın içeriğini kontrol edebilmeniz için ilk 5 satırı aşağıda gösterilecektir.")
-    st.dataframe(None, use_container_width=True)
+    st.info("The first 5 rows of your uploaded file will be shown here for you to verify the content.")  # Info message if no file
+    
 
-# Butona basıldığında çalışacak ana mantık
+# Main logic when button is pressed
 if generate_button:
     if st.session_state.df is not None:
-        with st.spinner("SQL üretiliyor..."):
+        with st.spinner("Generating SQL..."):  # Shows spinner while generating SQL
             try:
-                # Eğer farklı bir Excel sayfası seçildiyse veriyi yeniden oku
+                # If a different Excel sheet is selected, re-read the data
                 df = st.session_state.df
                 if sheet_name_to_process and sheet_name_to_process != df.attrs.get('sheet_name', 0):
                      df = pd.read_excel(uploaded_file, sheet_name=sheet_name_to_process)
                 
-                # DÜZELTME: Hatalı SQL üretme sorunu giderildi
-                table_name = user_table_name.strip() or default_name
-                st.session_state.generated_sql = generate_inserts(df, table_name, blank_mode, insert_mode)
+                # FIX: Incorrect SQL generation issue resolved
+                table_name = user_table_name.strip() or default_name  # Uses user input or default table name
+                st.session_state.generated_sql = generate_inserts(df, table_name, blank_mode, insert_mode)  # Generates SQL
             
             except Exception as e:
-                st.error(f"SQL üretilirken hata oluştu: {e}")
+                st.error(f"Error occurred while generating SQL: {e}")  # Shows error if SQL generation fails
 
-# Üretilen SQL kodunu göster
+# Show generated SQL code
 if st.session_state.generated_sql:
-    st.subheader("Oluşturulan INSERT Sorguları")
-    st.info("📋 Kodu kopyalamak için sağ üstteki butonu kullanabilir veya tüm metni seçebilirsiniz.")
-    st.code(st.session_state.generated_sql, language='sql', line_numbers=True)
+    st.subheader("Generated INSERT Statements")  # Section for generated SQL
+    st.info("📋 Use the button at the top right to copy the code or select all text.")  # Info message
+    st.code(st.session_state.generated_sql, language='sql', line_numbers=True)  # Displays generated SQL code
     st.download_button(
-        label="SQL Dosyasını İndir (.sql)",
+        label="Download SQL File (.sql)",
         data=st.session_state.generated_sql,
         file_name=f"{user_table_name.strip() or default_name}.sql",
         mime="text/plain",
         use_container_width=True
-    )
+    )  # Button to download SQL code as a file
