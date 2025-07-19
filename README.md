@@ -89,4 +89,4 @@ If you'd like to contribute, please open an issue or submit a pull request. All 
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+Bu proje, MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
