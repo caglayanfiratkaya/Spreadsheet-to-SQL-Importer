@@ -13,7 +13,7 @@ Excel ve CSV dosyalarınızı, gelişmiş seçeneklerle, farklı veritabanı leh
 
 Bu alana uygulamanızın ekran görüntüsünü veya kısa bir GIF'ini ekleyerek projenizi çok daha çekici hale getirebilirsiniz!
 
-![SQL Insert Üretici Arayüzü](https://imgur.com/a/MRmsqZQ)
+![SQL Insert Üretici Arayüzü](https://i.imgur.com/rkTCXKr.png)
 
 ---
 
