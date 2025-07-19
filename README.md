@@ -1,87 +1,92 @@
-# 🗃️ Gelişmiş SQL INSERT Üretici
+# 🗃️ SQL INSERT Generator
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-red?style=for-the-badge&logo=streamlit)
 ![Pandas](https://img.shields.io/badge/Pandas-2.0%2B-green?style=for-the-badge&logo=pandas)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-Excel ve CSV dosyalarınızı, gelişmiş seçeneklerle, farklı veritabanı lehçelerine uygun, hatasız SQL `INSERT` sorgularına dönüştüren interaktif bir web uygulaması.
+An interactive web application that converts your Excel and CSV files into error-free SQL `INSERT` queries, tailored for different database dialects with advanced options.
 
 ---
 
-### ✨ Uygulama Arayüzü
+![License: MIT](...)
 
-Bu alana uygulamanızın ekran görüntüsünü veya kısa bir GIF'ini ekleyerek projenizi çok daha çekici hale getirebilirsiniz!
-
-![SQL Insert Üretici Arayüzü](https://i.imgur.com/rkTCXKr.png)
+---
+### 🚀 [Try the Live Demo!](https://spreadsheet-to-sql-importer.streamlit.app/)
 
 ---
 
-## 🚀 Temel Özellikler
+### ✨ Application Interface
 
-* **Anında Veri Önizleme:** Dosyayı yüklediğiniz anda içeriğin ilk birkaç satırını görerek doğru veriyi işlediğinizden emin olun.
-* **Gelişmiş SQL Seçenekleri:**
-    * **Hedef Veritabanı:** MS SQL Server, PostgreSQL ve MySQL lehçeleri arasında seçim yapın.
-    * **Tablo Adı:** İsteğe bağlı olarak tablo adını kendiniz belirleyin veya dosya adının kullanılmasını sağlayın.
-    * **INSERT Tipi:** Her satır için ayrı `INSERT` sorguları veya tüm veriler için tek, birleştirilmiş (multi-row) bir `INSERT` sorgusu oluşturun.
-    * **Boş Hücre Yönetimi:** Dosyadaki boş hücrelerin SQL'de `NULL` olarak mı yoksa boş metin (`''`) olarak mı temsil edileceğini seçin.
-* **Çoklu Sayfa Desteği:** Birden fazla sayfaya sahip Excel dosyalarında, hangi sayfayı işlemek istediğinizi seçmenize olanak tanır.
-* **Kullanıcı Dostu Arayüz:** Tüm kontroller, ayarlar ve sonuçlar tek bir ekranda, anlaşılır bir şekilde sunulur.
-* **Yardım Menüsü:** Entegre `❓` yardım menüsü ile uygulamanın kullanımı hakkında hızlıca bilgi alın.
-* **SQL İndirme:** Oluşturulan SQL kodunu tek tıkla `.sql` dosyası olarak indirin.
+![SQL Insert Generator Interface](https://i.imgur.com/rkTCXKr.png)
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## 🚀 Key Features
 
-* **Python:** Uygulamanın temelini oluşturan programlama dili.
-* **Streamlit:** İnteraktif web arayüzünü oluşturmak için kullanılan ana kütüphane.
-* **Pandas:** Excel ve CSV dosyalarını okuma, işleme ve analiz etme için kullanılan güçlü veri kütüphanesi.
+* **Instant Data Preview:** See the first few rows of your file as soon as you upload it to ensure you're working with the correct data.
+* **Advanced SQL Options:**
+    * **Target Database:** Choose between MS SQL Server, PostgreSQL, and MySQL dialects.
+    * **Table Name:** Optionally set the table name yourself or use the file name.
+    * **INSERT Type:** Generate separate `INSERT` queries for each row or a single, combined (multi-row) `INSERT` query for all data.
+    * **Empty Cell Handling:** Decide whether empty cells in your file are represented as `NULL` or empty string (`''`) in SQL.
+* **Multi-Sheet Support:** For Excel files with multiple sheets, select which sheet you want to process.
+* **User-Friendly Interface:** All controls, settings, and results are presented clearly on a single screen.
+* **Help Menu:** Integrated `❓` help menu for quick guidance on using the application.
+* **SQL Download:** Download the generated SQL code as a `.sql` file with one click.
 
 ---
 
-## ⚙️ Kurulum ve Yerel Çalıştırma
+## 🛠️ Technologies Used
 
-Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin:
+* **Python:** The core programming language of the application.
+* **Streamlit:** The main library for building the interactive web interface.
+* **Pandas:** Powerful data library for reading, processing, and analyzing Excel and CSV files.
 
-1.  **Depoyu Klonlayın:**
+---
+
+## ⚙️ Installation and Local Usage
+
+To run the project on your own computer, follow these steps:
+
+1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/KULLANICI_ADINIZ/PROJE_ADINIZ.git](https://github.com/KULLANICI_ADINIZ/PROJE_ADINIZ.git)
-    cd PROJE_ADINIZ
+    git clone [https://github.com/YOUR_USERNAME/YOUR_PROJECT.git](https://github.com/YOUR_USERNAME/YOUR_PROJECT.git)
+    cd YOUR_PROJECT
     ```
 
-2.  **Gerekli Kütüphaneleri Yükleyin:**
-    *(Bir sanal ortam (virtual environment) oluşturmanız tavsiye edilir.)*
+2.  **Install Required Libraries:**
+    *(It is recommended to create a virtual environment.)*
     ```bash
     pip install -r requirements.txt
     ```
-    *(Not: Proje klasörünüzde `streamlit`, `pandas`, `openpyxl` içeren bir `requirements.txt` dosyası oluşturun.)*
+    *(Note: Create a `requirements.txt` file in your project folder containing `streamlit`, `pandas`, `openpyxl`.)*
 
-3.  **Uygulamayı Başlatın:**
+3.  **Start the Application:**
     ```bash
     streamlit run app.py
     ```
-    Bu komut, uygulamayı yerel bir sunucuda başlatacak ve otomatik olarak tarayıcınızda açacaktır.
+    This command will start the application on a local server and automatically open it in your browser.
 
 ---
 
-## ☁️ İnternette Yayınlama (Streamlit Community Cloud)
+## ☁️ Deploying Online (Streamlit Community Cloud)
 
-Bu uygulamayı Python bilmeyen arkadaşlarınızla paylaşmanın en kolay yolu, onu ücretsiz olarak internette yayınlamaktır.
+The easiest way to share this app with friends who don't know Python is to publish it online for free.
 
-1.  Projenizi bir GitHub deposuna yükleyin.
-2.  `share.streamlit.io` adresine gidin ve GitHub hesabınızla giriş yapın.
-3.  **"New app"** butonuna tıklayarak deponuzu seçin ve **"Deploy!"** butonuna basın.
-4.  Birkaç dakika içinde `proje-isminiz.streamlit.app` şeklinde bir linke sahip olacaksınız!
-
----
-
-## 🤝 Katkıda Bulunma
-
-Katkıda bulunmak isterseniz, lütfen bir "issue" açın veya bir "pull request" gönderin. Tüm katkılar memnuniyetle karşılanır!
+1.  Upload your project to a GitHub repository.
+2.  Go to `share.streamlit.io` and log in with your GitHub account.
+3.  Click the **"New app"** button, select your repository, and press **"Deploy!"**.
+4.  In a few minutes, you'll have a link like `your-project-name.streamlit.app`!
 
 ---
 
-## 📄 Lisans
+## 🤝 Contributing
 
-Bu proje, MIT Lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakınız.
+If you'd like to contribute, please open an issue or submit a pull request. All contributions are welcome!
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
