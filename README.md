@@ -3,7 +3,6 @@
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-red?style=for-the-badge&logo=streamlit)
 ![Pandas](https://img.shields.io/badge/Pandas-2.0%2B-green?style=for-the-badge&logo=pandas)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 An interactive web application that converts your Excel and CSV files into error-free SQL `INSERT` queries, tailored for different database dialects with advanced options.
 
